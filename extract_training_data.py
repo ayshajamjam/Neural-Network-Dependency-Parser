@@ -91,6 +91,8 @@ def get_training_instances(dep_structure):
 dep_relations = ['tmod', 'vmod', 'csubjpass', 'rcmod', 'ccomp', 'poss', 'parataxis', 'appos', 'dep', 'iobj', 'pobj', 'mwe', 'quantmod', 'acomp', 'number', 'csubj', 'root', 'auxpass', 'prep', 'mark', 'expl', 'cc', 'npadvmod', 'prt', 'nsubj', 'advmod', 'conj', 'advcl', 'punct', 'aux', 'pcomp', 'discourse', 'nsubjpass', 'predet', 'cop', 'possessive', 'nn', 'xcomp', 'preconj', 'num', 'amod', 'dobj', 'neg','dt','det']
 
 
+
+
 class FeatureExtractor(object):
        
     def __init__(self, word_vocab_file, pos_vocab_file):
@@ -140,8 +142,6 @@ class FeatureExtractor(object):
                 break
             arr_stack.append(item)
             arr_stack_index.append(item)
-        
-        print(arr_stack)
 
         """
         The first 5 entries are special symbols. 
@@ -152,15 +152,15 @@ class FeatureExtractor(object):
         <NULL> is used to pad context windows. 
         """
         
-         # Substitute words/tags in arr
+        # Substitute words/tags in arr
         for i in range(len(arr_stack)):
             # Number --> CD
             if(pos[arr_stack[i]] == 'CD'):
-                arr_stack[i] = '<CD>'   # 0
+                arr_stack[i] = '<CD> ' + words[arr_stack[i]]   # 0
                 arr_stack_index[i] = 0
             # Proper name --> NNP
             elif(pos[arr_stack[i]] == 'NNP'):
-                arr_stack[i] = '<NNP>'   # 1
+                arr_stack[i] = '<NNP> ' + words[arr_stack[i]]  # 1
                 arr_stack_index[i] = 1
             # Root symbol --> ROOT
             elif(arr_stack[i] == 0):
@@ -168,7 +168,7 @@ class FeatureExtractor(object):
                 arr_stack_index[i] = 3
             # Word seen only once --> UNK
             elif(words[arr_stack[i]].lower() not in self.word_vocab.keys()):
-                arr_stack[i] = '<UNK>'  # 2
+                arr_stack[i] = '<UNK> ' + words[arr_stack[i]]  # 2
                 arr_stack_index[i] = 2
             # Word seen more than once
             elif(words[arr_stack[i]].lower() in self.word_vocab.keys()):
@@ -177,30 +177,58 @@ class FeatureExtractor(object):
                 arr_stack_index[i] = self.word_vocab[word]
 
         while(len(arr_stack) != 3):
-            arr_stack.append(4)
+            arr_stack.append('<NULL>')
             arr_stack_index.append(4)
 
-        print(arr_stack)
-        print(arr_stack_index)
+        # print(arr_stack)
+        # print(arr_stack_index)
 
-        # # Get buff indices
-        # for i, item in enumerate(reversed(buff)):
-        #     if(i == 3):
-        #         break
-        #     arr_buff.append(item)
-        
-        # while(len(arr_buff) != 3):
-        #     arr_buff.append(4)
+        # Get buff indices
+        for i, item in enumerate(reversed(buff)):
+            if(i == 3):
+                break
+            arr_buff.append(item)
+            arr_buff_index.append(item)
 
-        # arr = arr_stack + arr_buff
+        # Substitute words/tags in arr
+        for i in range(len(arr_buff)):
+            # Number --> CD
+            if(pos[arr_buff[i]] == 'CD'):
+                arr_buff[i] = '<CD> ' + words[arr_buff[i]]   # 0
+                arr_buff_index[i] = 0
+            # Proper name --> NNP
+            elif(pos[arr_buff[i]] == 'NNP'):
+                arr_buff[i] = '<NNP> ' + words[arr_buff[i]]   # 1
+                arr_buff_index[i] = 1
+            # Root symbol --> ROOT
+            elif(arr_buff[i] == 0):
+                arr_buff[i] = '<ROOT>' # 3
+                arr_buff_index[i] = 3
+            # Word seen only once --> UNK
+            elif(words[arr_buff[i]].lower() not in self.word_vocab.keys()):
+                arr_buff[i] = '<UNK> ' + words[arr_buff[i]]  # 2
+                arr_buff_index[i] = 2
+            # Word seen more than once
+            elif(words[arr_buff[i]].lower() in self.word_vocab.keys()):
+                word = words[arr_buff[i]].lower()
+                arr_buff[i] = word
+                arr_buff_index[i] = self.word_vocab[word]
 
-        # print("Stack: ", stack)
-        # print("Buff: ", buff)
-        # print(np.asarray(arr))
+        while(len(arr_buff) != 3):
+            arr_buff.append('<NULL>')
+            arr_buff_index.append(4)
 
-        # print(arr)
+        # print(arr_buff)
+        # print(arr_buff_index)
 
-        return np.asarray(arr_stack)    # TODO: arr not arrr_stack
+        arr_word = arr_stack + arr_buff
+        arr_index = arr_stack_index + arr_buff_index
+
+        print(arr_word)
+        print(arr_index)
+        print('\n')
+
+        return np.asarray(arr_index)    # TODO: arr not arrr_stack
 
     def get_output_representation(self, output_pair):  
         # TODO: Write this method for Part 2
