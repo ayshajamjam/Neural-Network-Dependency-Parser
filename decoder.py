@@ -41,9 +41,6 @@ class Parser(object):
 
             actions_list.sort(key=itemgetter(1),reverse=True)
 
-            # print(actions)
-            # print(actions_list)
-
             for a in actions_list:
                 # Shifting the only word out of the buffer is also illegal unless the stack is empty.
                 if(a[0][0] == 'shift'):
@@ -63,8 +60,7 @@ class Parser(object):
                     else:   # left_arc
                         child = state.stack.pop()
                         parent = state.buffer[-1]
-                        state.deps.add((features[3], features[0], a[0][1]))
-                        print((features[3], features[0], a[0][1]))
+                        state.deps.add((parent, child, a[0][1]))
                         break
                 elif(a[0][0] == 'right_arc'):
                     # arc-right not permitted when the stack is empty.
@@ -74,8 +70,7 @@ class Parser(object):
                         child = state.buffer[-1]
                         state.buffer[-1] = state.stack[-1]
                         parent = state.stack.pop()
-                        state.deps.add((features[0], features[3], a[0][1]))
-                        print((features[0], features[3], a[0][1]))
+                        state.deps.add((parent, child, a[0][1]))
                         break
 
         result = DependencyStructure()
