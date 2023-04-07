@@ -133,7 +133,7 @@ class FeatureExtractor(object):
         arr_stack_index = []
         arr_buff_index = []
 
-        print(words)
+        # print(words)
         # print(pos)
 
         # Get stack indices
@@ -224,11 +224,11 @@ class FeatureExtractor(object):
         arr_word = arr_stack + arr_buff
         arr_index = arr_stack_index + arr_buff_index
 
-        print(arr_word)
-        print(arr_index)
-        print('\n')
+        # print(arr_word)
+        # print(arr_index)
+        # print('\n')
 
-        return np.asarray(arr_index)    # TODO: arr not arrr_stack
+        return np.asarray(arr_index)
 
     def get_output_representation(self, output_pair):  
         # TODO: Write this method for Part 2
@@ -237,8 +237,8 @@ class FeatureExtractor(object):
         index = self.output_labels[output_pair]
         arr[index] = 1
 
-        # print(output_pair)
-        # print(arr)
+        print(output_pair)
+        print(arr)
 
         # matrix_transitions = tf.keras.utils.to_categorical(dep_relations, num_classes=91, dtype ="int32")
 
