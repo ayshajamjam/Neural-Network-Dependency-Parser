@@ -9,6 +9,9 @@ import keras
 from extract_training_data import FeatureExtractor, State
 from operator import itemgetter
 
+import tensorflow as tf
+tf.compat.v1.disable_eager_execution()
+
 class Parser(object): 
 
     def __init__(self, extractor, modelfile):
@@ -53,21 +56,26 @@ class Parser(object):
                         # print(state.stack)
                         break
                 elif(a[0][0] == 'left_arc'):
+                    # arc-left not permitted when the stack is empty.
+                    # The root node must never be the target of a left-arc 
                     if(features[0] == 3 or (features[0] == 4 and features[1] == 4 and features[2] == 4)):
                         continue
                     else:   # left_arc
                         child = state.stack.pop()
                         parent = state.buffer[-1]
-                        state.deps.add((parent, child, a[0][1]))
+                        state.deps.add((features[3], features[0], a[0][1]))
+                        print((features[3], features[0], a[0][1]))
                         break
                 elif(a[0][0] == 'right_arc'):
+                    # arc-right not permitted when the stack is empty.
                     if(features[0] == 4 and features[1] == 4 and features[2] == 4):
                         continue
                     else:   # right_arc
-                        child = state.stack[-1]
+                        child = state.buffer[-1]
                         state.buffer[-1] = state.stack[-1]
                         parent = state.stack.pop()
-                        state.deps.add((parent, child, a[0][1]))
+                        state.deps.add((features[0], features[3], a[0][1]))
+                        print((features[0], features[3], a[0][1]))
                         break
 
         result = DependencyStructure()
