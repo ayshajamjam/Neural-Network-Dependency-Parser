@@ -27,6 +27,8 @@ Train a feed-forward neural network to predict the transitions of an arc-standar
 
 ## Setup Instructions
 
-pip install --upgrade setuptools wheel
-python3s -m pip install tensorflow
-python3 get_vocab.py data/train.conll data/words.vocab data/pos.vocab
+- pip install --upgrade setuptools wheel
+
+- python3 -m pip install tensorflow
+
+- python3 get_vocab.py data/train.conll data/words.vocab data/pos.vocab
