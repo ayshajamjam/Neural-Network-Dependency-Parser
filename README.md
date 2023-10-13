@@ -75,16 +75,16 @@ Any field that contains no entry is replaced with a _.
 
 For example, consider the following sentence annotation: 
 
-`1 The _ DT DT _ 2 dt _ _
+1 The _ DT DT _ 2 dt _ _
 2 cat _ NN NN _ 3 nsubj _ _
 3 eats _ VB VB _ 0 root _ _
 4 tasty _ JJ JJ _ 5 amod _ _
 5 fish _ NN NN _ 3 dobj _ _
-6 . _ . . _ 3 punct _ _`
+6 . _ . . _ 3 punct _ _
 
 The annotation corresponds to the following dependency tree:
 
-![Example CoNLL annotation](conll_example.png)
+![Example CoNLL annotation](conll_example-1.png)
 
 ## Part 1: Obtain the Vocabulary
 
@@ -96,7 +96,7 @@ Run the following:
 
 to generate an index of words and POS indices. This contains all words that appear more than once in the training data. The words file will look like this: 
 
-`
+
 <CD> 0
 <NNP> 1
 <UNK> 2
@@ -105,7 +105,7 @@ to generate an index of words and POS indices. This contains all words that appe
 blocking 5
 hurricane 6
 ships 7
-`
+
 
 The first 5 entries are special symbols. <CD> stands for any number (anything tagged with the POS tag CD), <NNP> stands for any proper name (anything tagged with the POS tag NNP). <UNK> stands for unknown words (in the training data, any word that appears only once). <ROOT> is a special root symbol (the word associated with the word 0, which is initially placed on the stack of the dependency parser). <NULL> is used to pad context windows. 
 
